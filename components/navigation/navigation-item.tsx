@@ -31,7 +31,7 @@ export const NavigationItem = ({
       side='right'
       align='center'
     >
-      <button 
+      <button
         onClick={onClick}
         className='group relative flex items-center'
       >
@@ -44,7 +44,7 @@ export const NavigationItem = ({
           'relative group flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] transition-all overflow-hidden',
           params?.serverId === id && 'bg-primary/10 text-primary rounded-[16px]'
         )}>
-          <Image 
+          <Image
             fill
             src={imageUrl}
             alt='Channel'

@@ -7,7 +7,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -45,7 +45,7 @@ export const InitialModal = () => {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);  
+  }, []);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -88,13 +88,13 @@ export const InitialModal = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
             <div className='space-y-8 px-6'>
               <div className='flex items-center justify-center text-center'>
-                <FormField 
+                <FormField
                   control={form.control}
                   name='imageUrl'
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <FileUpload 
+                        <FileUpload
                           endpoint='serverImage'
                           value={field.value}
                           onChange={field.onChange}
@@ -104,7 +104,7 @@ export const InitialModal = () => {
                   )}
                 />
               </div>
-              <FormField 
+              <FormField
                 control={form.control}
                 name='name'
                 render={({ field }) => (
@@ -115,7 +115,7 @@ export const InitialModal = () => {
                       Server Name
                     </FormLabel>
                     <FormControl>
-                      <Input 
+                      <Input
                         disabled={isLoading}
                         className='bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0'
                         placeholder='Enter a server name'

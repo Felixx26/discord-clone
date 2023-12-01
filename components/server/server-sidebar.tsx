@@ -21,16 +21,16 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
       id: serverId,
     },
     include: {
-      channels:{
-        orderBy:{
+      channels: {
+        orderBy: {
           createdAt: 'asc'
         }
       },
-      members:{
-        include:{
+      members: {
+        include: {
           profile: true
         },
-        orderBy:{
+        orderBy: {
           role: 'asc'
         }
       }
@@ -48,9 +48,9 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const role = server?.members.find(member => member.profileId === profile?.id)?.role;
 
 
-  return ( 
+  return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-      <ServerHeader 
+      <ServerHeader
         server={server}
         role={role}
       />
