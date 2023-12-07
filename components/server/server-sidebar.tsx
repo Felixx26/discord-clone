@@ -66,46 +66,48 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
 				role={role}
 			/>
 			<ScrollArea className="flex-1 px-3">
-				<ServerSearch
-					data={[
-						{
-							label: 'Text channels',
-							type: 'channel',
-							data: textChannels?.map((channel) => ({
-								icon: iconMap[channel.type],
-								name: channel.name,
-								id: channel.id,
-							})),
-						},
-						{
-							label: 'Voice channels',
-							type: 'channel',
-							data: audioChannels?.map((channel) => ({
-								icon: iconMap[channel.type],
-								name: channel.name,
-								id: channel.id,
-							})),
-						},
-						{
-							label: 'Video channels',
-							type: 'channel',
-							data: videoChannels?.map((channel) => ({
-								icon: iconMap[channel.type],
-								name: channel.name,
-								id: channel.id,
-							})),
-						},
-						{
-							label: 'Members',
-							type: 'member',
-							data: members?.map((member) => ({
-								icon: roleIconMap[member.role],
-								name: member.profile.name,
-								id: member.id,
-							})),
-						},
-					]}
-				/>
+				<div className="mt-2">
+					<ServerSearch
+						data={[
+							{
+								label: 'Text channels',
+								type: 'channel',
+								data: textChannels?.map((channel) => ({
+									icon: iconMap[channel.type],
+									name: channel.name,
+									id: channel.id,
+								})),
+							},
+							{
+								label: 'Voice channels',
+								type: 'channel',
+								data: audioChannels?.map((channel) => ({
+									icon: iconMap[channel.type],
+									name: channel.name,
+									id: channel.id,
+								})),
+							},
+							{
+								label: 'Video channels',
+								type: 'channel',
+								data: videoChannels?.map((channel) => ({
+									icon: iconMap[channel.type],
+									name: channel.name,
+									id: channel.id,
+								})),
+							},
+							{
+								label: 'Members',
+								type: 'member',
+								data: members?.map((member) => ({
+									icon: roleIconMap[member.role],
+									name: member.profile.name,
+									id: member.id,
+								})),
+							},
+						]}
+					/>
+				</div>
 			</ScrollArea>
 		</div>
 	);
