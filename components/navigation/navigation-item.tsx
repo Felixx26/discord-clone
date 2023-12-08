@@ -44,6 +44,7 @@ export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
 				>
 					<Image
 						fill
+						sizes="48px"
 						src={imageUrl}
 						alt="Channel"
 					/>
