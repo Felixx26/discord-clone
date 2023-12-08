@@ -75,7 +75,6 @@ export const MembersModal = () => {
 			setLoadingId('');
 		}
 	};
-	console.log(data);
 
 	return (
 		<Dialog

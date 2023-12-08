@@ -62,7 +62,6 @@ export async function PATCH(req: Request, { params }: { params: { memberId: stri
 		if (!serverId) return new Response('Server id is missing', { status: 400 });
 
 		if (!params.memberId) return new Response('members id is missing', { status: 400 });
-		console.log(params);
 		const server = await db.server.update({
 			where: {
 				id: serverId,
