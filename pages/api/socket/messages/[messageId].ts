@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
 		if (!member) return res.status(404).json({ error: 'Member not found' });
 
-		const message = await db.message.findFirst({
+		let message = await db.message.findFirst({
 			where: {
 				id: messageId as string,
 				channelId: channel.id as string,
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 		if (!canModify) return res.status(403).json({ error: 'Forbidden' });
 
 		if (req.method === 'DELETE') {
-			await db.message.update({
+			message = await db.message.update({
 				where: {
 					id: message.id,
 				},
@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 		if (req.method === 'PATCH') {
 			if (!isMessageOwner) return res.status(403).json({ error: 'Forbidden' });
 
-			await db.message.update({
+			message = await db.message.update({
 				where: {
 					id: message.id,
 				},
