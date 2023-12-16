@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				<body className={cn(font.className, 'bg-white dark:bg-[#313338]')}>
 					<ThemeProvider
 						attribute="class"
-						defaultTheme="light"
+						defaultTheme="dark"
 						enableSystem={false}
 						storageKey="discord-theme"
 					>
