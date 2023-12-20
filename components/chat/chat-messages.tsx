@@ -1,14 +1,14 @@
 'use client';
 
-import { Fragment, useRef, ElementRef } from 'react';
+import { Fragment, useRef, ElementRef, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Member, Message, Profile } from '@prisma/client';
 import { Loader2, ServerCrash } from 'lucide-react';
 import { useChatQuery } from '@/hooks/use-chat-query';
-import { useChatSocket } from '@/hooks/use-chat-socket';
 import { ChatWelcome } from './chat-welcome';
 import { ChatItem } from './chat-item';
 import { useChatScroll } from '@/hooks/use-chat-scroll';
+import { pusherClient } from '@/lib/pusher';
 
 const DATE_FORMAT = 'd MMM yyyy HH:mm';
 
@@ -23,8 +23,7 @@ interface ChatMessagesProps {
 	member: Member;
 	chatId: string;
 	apiUrl: string;
-	socketUrl: string;
-	socketQuery: Record<string, string>;
+	query: Record<string, string>;
 	paramKey: 'channelId' | 'conversationId';
 	paramValue: string;
 	type: 'channel' | 'conversation';
@@ -35,8 +34,7 @@ export const ChatMessages = ({
 	member,
 	chatId,
 	apiUrl,
-	socketUrl,
-	socketQuery,
+	query,
 	paramKey,
 	paramValue,
 	type,
@@ -48,14 +46,26 @@ export const ChatMessages = ({
 	const chatRef = useRef<ElementRef<'div'>>(null);
 	const bottomRef = useRef<ElementRef<'div'>>(null);
 
-	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useChatQuery({
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, refetch } = useChatQuery({
 		queryKey,
 		apiUrl,
 		paramKey,
 		paramValue,
 	});
 
-	useChatSocket({ queryKey, addKey, updateKey });
+	useEffect(() => {
+		pusherClient.subscribe(chatId);
+		const messageHandler = () => {
+			refetch();
+		};
+
+		pusherClient.bind('new-message', messageHandler);
+		return () => {
+			pusherClient.unsubscribe(chatId);
+			pusherClient.unbind('new-message', messageHandler);
+		};
+	}, [chatId, refetch]);
+
 	useChatScroll({
 		chatRef,
 		bottomRef,
@@ -121,8 +131,8 @@ export const ChatMessages = ({
 								deleted={message.deleted}
 								timestamp={format(new Date(message.createdAt), DATE_FORMAT)}
 								isUpdated={message.updatedAt !== message.createdAt}
-								socketUrl={socketUrl}
-								socketQuery={socketQuery}
+								apiUrl={apiUrl}
+								query={query}
 							/>
 						))}
 					</Fragment>

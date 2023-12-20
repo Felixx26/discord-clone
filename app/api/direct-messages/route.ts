@@ -2,6 +2,7 @@ import { currentProfile } from '@/lib/current-profile';
 import { NextResponse } from 'next/server';
 import { DirectMessage } from '@prisma/client';
 import { db } from '@/lib/db';
+import { pusherServer } from '@/lib/pusher';
 
 const MESSAGES_BATCH = 10;
 
@@ -71,6 +72,84 @@ export async function GET(req: Request) {
 		});
 	} catch (error) {
 		console.log('[DIRECT_MESSAGES]', error);
+		return new NextResponse('Internal Server Error', { status: 500 });
+	}
+}
+export async function POST(req: Request) {
+	try {
+		const profile = await currentProfile();
+
+		const body = await req.json();
+		const { content, fileUrl } = body;
+		const { searchParams } = new URL(req.url);
+
+		const conversationId = searchParams.get('conversationId');
+
+		if (!profile) return new NextResponse('Unauthorized', { status: 401 });
+
+		if (!conversationId) return new NextResponse('Conversation ID missing', { status: 400 });
+
+		if (!content) return new NextResponse('Content is missing', { status: 400 });
+
+		const conversation = await db.conversation.findFirst({
+			where: {
+				id: conversationId as string,
+				OR: [
+					{
+						memberOne: {
+							profileId: profile.id,
+						},
+					},
+					{
+						memberTwo: {
+							profileId: profile.id,
+						},
+					},
+				],
+			},
+			include: {
+				memberOne: {
+					include: {
+						profile: true,
+					},
+				},
+				memberTwo: {
+					include: {
+						profile: true,
+					},
+				},
+			},
+		});
+
+		if (!conversation) return new NextResponse('Conversation not found', { status: 404 });
+
+		const member = conversation.memberOne.profileId === profile.id ? conversation.memberOne : conversation.memberTwo;
+
+		if (!member) return new NextResponse('Member not found', { status: 404 });
+
+		const message = await db.directMessage.create({
+			data: {
+				content,
+				fileUrl,
+				conversationId: conversationId as string,
+				memberId: member.id,
+			},
+			include: {
+				member: {
+					include: {
+						profile: true,
+					},
+				},
+			},
+		});
+
+		const channelKey = `chat:${conversationId}:messages`;
+
+		await pusherServer.trigger(conversationId, 'new-message', message);
+
+		return NextResponse.json(message, { status: 201 });
+	} catch (error) {
+		console.log('DIRECT_MESSAGES_POST', error);
 		return new NextResponse('Internal Server Error', { status: 500 });
 	}
 }
