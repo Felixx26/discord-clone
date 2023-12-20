@@ -192,6 +192,6 @@ export async function DELETE(req: Request, { params }: { params: { directMessage
 		return NextResponse.json(directMessage, { status: 200 });
 	} catch (error) {
 		console.log('MESSAGE_ID', error);
-		return new NextResponse('Internal server error', { status: 500 });
+		return new NextResponse(`Internal server error ${error}`, { status: 500 });
 	}
 }
