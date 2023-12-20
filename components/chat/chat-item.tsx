@@ -29,8 +29,8 @@ interface ChatItemProps {
 	deleted: boolean;
 	currentMember: Member;
 	isUpdated: boolean;
-	socketUrl: string;
-	socketQuery: Record<string, string>;
+	apiUrl: string;
+	query: Record<string, string>;
 }
 
 const roleIconMap = {
@@ -52,8 +52,8 @@ export const ChatItem = ({
 	deleted,
 	currentMember,
 	isUpdated,
-	socketUrl,
-	socketQuery,
+	apiUrl,
+	query,
 }: ChatItemProps) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const { onOpen } = useModal();
@@ -82,8 +82,8 @@ export const ChatItem = ({
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
 			const url = qs.stringifyUrl({
-				url: `${socketUrl}/${id}`,
-				query: socketQuery,
+				url: `${apiUrl}/${id}`,
+				query,
 			});
 
 			await axios.patch(url, values);
@@ -229,8 +229,8 @@ export const ChatItem = ({
 						<Trash
 							onClick={() =>
 								onOpen('deleteMessage', {
-									apiUrl: `${socketUrl}/${id}`,
-									query: socketQuery,
+									apiUrl: `${apiUrl}/${id}`,
+									query,
 								})
 							}
 							className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-300 transition"
